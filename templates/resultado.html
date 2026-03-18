@@ -2,12 +2,16 @@
 <html>
 <body>
 
+{% if erro %}
+<h2>{{ erro }}</h2>
+{% else %}
 <h2>Resultado:</h2>
 
 <p>Marca: {{ carro.marca }}</p>
 <p>Modelo: {{ carro.modelo }}</p>
 <p>Ano: {{ carro.ano }}</p>
 <p>Preço: {{ carro.preco }}</p>
+{% endif %}
 
 <a href="/">Voltar</a>
 

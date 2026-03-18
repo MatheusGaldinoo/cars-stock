@@ -1,16 +1,20 @@
-from fastapi import FastAPI
-from schemas import car
-from database import salvar_carros, carregar_carros
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from fastapi import Form
+
+from schemas import car as CarSchema
+from car_service import create_car, get_all_cars, update_car, delete_car, get_car_by_placa
 
 app = FastAPI()
 
-#Cadastro do carro
-cars = carregar_carros()
+# Configurar Templates
+templates = Jinja2Templates(directory="templates")
 
+# =========================
+# 🚗 API CRUD DE CARROS
+# =========================
+
+# Criar carro
 @app.post("/cars")
 def criar_carro(
     placa: str = Form(...),
@@ -18,100 +22,118 @@ def criar_carro(
     marca: str = Form(...),
     ano: int = Form(...),
     preco: float = Form(...),
+    disponibilidade: bool = Form(True),
     acesso: str = ""
 ):
     if acesso != "liberado":
         return {"erro": "Acesso negado"}
     
-    novo_carro = {
-        "placa": placa,
-        "modelo": modelo,
-        "marca": marca,
-        "ano": ano,
-        "preco": preco
-    }
-    cars.append(novo_carro)
-    salvar_carros(cars)
+    car_data = CarSchema(
+        placa=placa,
+        modelo=modelo,
+        marca=marca,
+        ano=ano,
+        preco=preco,
+        disponibilidade=disponibilidade
+    )
+
+    result = create_car(car_data.dict())
+    if "erro" in result:
+        return result
     return {"mensagem": "Carro cadastrado com sucesso"}
 
-#Buscar carro pela placa
 
+# Buscar carro pela placa
 @app.get("/cars/{placa}")
 def buscar_carro(placa: str):
-    cars = carregar_carros()
-    placa_digitada = placa.upper()
+    carro = get_car_by_placa(placa)
 
-    for carro in cars:
-        if carro["placa"].upper() == placa_digitada:
-            return carro
-    return {"erro: Carro não encontrado"}
+    if carro:
+        return carro
 
-#Listando todos os carros
+    return {"erro": "Carro não encontrado"}
 
+
+# Listar todos os carros
 @app.get("/cars")
 def listar_carros():
-    return cars
+    return get_all_cars()
 
-#Editando o carro
 
-@app.put("/cars/{placa}")
-def atualizar_carro(placa: str, carro_atualizado: car):
-    for i, carro in enumerate(cars):
-        if carro["placa"].upper() == placa.upper():
-            cars[i] = carro_atualizado
-            salvar_carros(cars)
-            return carro_atualizado
+# Atualizar carro (PATCH)
+@app.patch("/cars/{placa}")
+def atualizar_carro(placa: str, dados: dict):
+    carro = update_car(placa, dados)
+
+    if carro:
+        return carro
+
     return {"erro": "Carro não encontrado"}
 
-#Deletando o carro
 
+# Deletar carro
 @app.delete("/cars/{placa}")
 def deletar_carro(placa: str):
-    for carro in cars:
-        if carro["placa"].upper() == placa.upper():
-            cars.remove(carro)
-            return {"mensagem": "Carro removido"}
+    if delete_car(placa):
+        return {"mensagem": "Carro removido"}
+
     return {"erro": "Carro não encontrado"}
 
-#Configurar Templates
-templates = Jinja2Templates(directory="templates")
 
-#Rota da página
+# =========================
+# 🌐 FRONTEND ROUTES
+# =========================
+
+# Página inicial
 @app.get("/", response_class=HTMLResponse)
 def pagina_inicial(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-#Rota de busca para o HTML
+
+# Busca pelo HTML
 @app.get("/buscar", response_class=HTMLResponse)
 def buscar_html(request: Request, placa: str):
-    for carro in cars:
-        if carro["placa"].upper == placa.upper():
-            return templates.TemplateResponse(" resultado.html", {
-             "request": request,
-             "carro": carro
-            })
-    return HTMLResponse("Carro não encontrado")
+    carro = get_car_by_placa(placa)
 
-#Rota de login para cadastro de carros
+    if carro:
+        return templates.TemplateResponse("resultado.html", {
+            "request": request,
+            "carro": carro
+        })
+
+    return templates.TemplateResponse("resultado.html", {
+        "request": request,
+        "carro": None,
+        "erro": "Carro não encontrado"
+    })
+
+
+# =========================
+# 🔐 AUTH ROUTES
+# =========================
 
 USUARIO = "admin"
 SENHA = "1234"
+
 
 @app.get("/login", response_class=HTMLResponse)
 def tela_login(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
+
 @app.post("/login")
 def fazer_login(username: str = Form(...), password: str = Form(...)):
     if username == USUARIO and password == SENHA:
-        return {"acesoo": "liberado"}
+        from fastapi.responses import RedirectResponse
+        return RedirectResponse(url="/admin?acesso=liberado", status_code=302)
     else:
         return {"mensagem": "Senha ou usuário inválidos"}
-    
-#Página de cadastro de veículos
 
+
+# Página admin
 @app.get("/admin", response_class=HTMLResponse)
 def tela_admin(request: Request, acesso: str = ""):
     if acesso != "liberado":
         return {"erro": "Acesso negado"}
+
     return templates.TemplateResponse("admin.html", {"request": request})

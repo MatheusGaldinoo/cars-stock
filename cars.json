@@ -4,6 +4,15 @@
         "modelo": "CORSA WIND",
         "marca": "CHEVROLET",
         "ano": 1998,
-        "preco": 19500.0
+        "preco": 19500.0,
+        "disponibilidade": true
+    },
+    {
+        "placa": "ABC1234",
+        "modelo": "Civic",
+        "marca": "Honda",
+        "ano": 2020,
+        "preco": 80000.0,
+        "disponibilidade": true
     }
 ]
