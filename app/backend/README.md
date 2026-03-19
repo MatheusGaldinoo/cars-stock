@@ -6,11 +6,10 @@
 
 ## Como executar
 
-### 1. Clone/entre na pasta do projeto
+### 1. Entre no diretório do backend
 
 ```bash
-git clone https://github.com/rafaelalm-Leal/gerenciador-estoque-carros.git
-cd gerenciador-estoque-carros/app/backend
+cd app/backend
 ```
 
 ### 2. Crie e ative o ambiente virtual
