@@ -8,3 +8,7 @@ __pycache__/
 
 # Configs do VSCode
 .vscode/
+
+# Python packaging
+gerenciador_estoque_carros.egg-info/
+*.egg-info/

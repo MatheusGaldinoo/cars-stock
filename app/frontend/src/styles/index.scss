@@ -1,0 +1,140 @@
+@import "tailwindcss";
+
+// Foundation configuration overrides
+$primary-color: #0A58CA; // Blue
+$secondary-color: #6C757D; // Gray
+$black: #212529;
+$white: #FFFFFF;
+$body-background: #F8F9FA;
+$body-font-color: $black;
+
+// Import Foundation from node_modules
+@import 'foundation-sites/scss/foundation';
+@include foundation-everything;
+
+// --- Custom Components ---
+
+.search-header {
+  background-color: $black;
+  padding: 1rem 0;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  
+  .logo {
+    color: $white;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    span { color: $primary-color; }
+  }
+  
+  .search-container {
+    position: relative;
+    input[type='text'] {
+      border-radius: 20px;
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+      margin-bottom: 0;
+      border: 1px solid $secondary-color;
+      &:focus {
+        border-color: $primary-color;
+        box-shadow: 0 0 5px rgba($primary-color, 0.5);
+      }
+    }
+  }
+}
+
+.car-card {
+  background-color: $white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.06);
+  border: 1px solid #E9ECEF;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+  }
+
+  .car-image-container {
+    height: 200px;
+    background-color: #DEE2E6; // Light gray fallback
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $secondary-color;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .no-image {
+      font-size: 3rem;
+      opacity: 0.5;
+    }
+  }
+
+  .car-content {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+
+    .car-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: $primary-color;
+      margin-bottom: 0.25rem;
+      line-height: 1.2;
+    }
+
+    .car-subtitle {
+      font-size: 0.9rem;
+      color: $secondary-color;
+      margin-bottom: 1rem;
+    }
+
+    .car-attributes {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      
+      .label {
+        background-color: #E9ECEF;
+        color: $black;
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        font-weight: 600;
+        
+        &.sold {
+          background-color: #DC3545;
+          color: $white;
+        }
+      }
+    }
+
+    .car-footer {
+      border-top: 1px solid #E9ECEF;
+      padding-top: 1rem;
+      margin-top: auto;
+      
+      .car-price {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: $black;
+        margin: 0;
+      }
+    }
+  }
+}
