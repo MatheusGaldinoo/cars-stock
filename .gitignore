@@ -12,3 +12,24 @@ __pycache__/
 # Python packaging
 gerenciador_estoque_carros.egg-info/
 *.egg-info/
+
+# Frontend & Vite
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Banco de dados
+*.db
+*.sqlite3
+
+# Ambiente
+.env
+.env.*
+
+# Logs, coverage, testes
+*.log
+npm-debug.log*
+.pytest_cache/
+coverage/
+.DS_Store
