@@ -1,4 +1,0 @@
-car_service
-database
-main
-schemas

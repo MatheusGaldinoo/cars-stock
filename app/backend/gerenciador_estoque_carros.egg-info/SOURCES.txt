@@ -1,8 +1,0 @@
-README.md
-main.py
-pyproject.toml
-gerenciador_estoque_carros.egg-info/PKG-INFO
-gerenciador_estoque_carros.egg-info/SOURCES.txt
-gerenciador_estoque_carros.egg-info/dependency_links.txt
-gerenciador_estoque_carros.egg-info/requires.txt
-gerenciador_estoque_carros.egg-info/top_level.txt

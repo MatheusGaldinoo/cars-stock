@@ -1,30 +1,27 @@
-from fastapi import APIRouter, Form, Request
+import os
+from fastapi import APIRouter, Form
 from src.services import user_service as UserService
 from src.models import user_schema as User
-from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
 
-templates = Jinja2Templates(directory="templates")
-
-router = APIRouter(prefix="/users")
+router = APIRouter()
 
 USUARIO = "admin"
 SENHA = "1234"
 
-@router.get("/login", response_class=HTMLResponse)
-def tela_login(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+@router.get("/login")
+def tela_login():
+    return {"mensagem": "Por favor, faça login com POST /login enviando 'username' e 'password' via form-data."}
 
 @router.post("/login")
 def fazer_login(username: str = Form(...), password: str = Form(...)):
     if username == USUARIO and password == SENHA:
-        return RedirectResponse(url="/admin?acesso=liberado", status_code=302)
+        return {"mensagem": "Login realizado com sucesso", "acesso": "liberado"}
     else:
         return {"mensagem": "Senha ou usuário inválidos"}
 
-@router.get("/admin", response_class=HTMLResponse)
-def tela_admin(request: Request, acesso: str = ""):
+@router.get("/admin")
+def tela_admin(acesso: str = ""):
     if acesso != "liberado":
         return {"erro": "Acesso negado"}
 
-    return templates.TemplateResponse("admin.html", {"request": request})
+    return {"mensagem": "Bem-vindo à área administrativa"}

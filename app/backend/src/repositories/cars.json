@@ -13,6 +13,7 @@
         "marca": "Honda",
         "ano": 2020,
         "preco": 80000.0,
-        "disponibilidade": true
+        "disponibilidade": true,
+        "additionalProp1": {}
     }
 ]

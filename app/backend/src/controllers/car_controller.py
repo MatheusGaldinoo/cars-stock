@@ -1,7 +1,6 @@
-
 from fastapi import APIRouter, Form
 from src.services import car_service
-from src.models import car_schema as Car
+from src.models.car_schema import Car
 
 router = APIRouter(prefix="/cars")
 
@@ -22,13 +21,14 @@ def criar_carro(
     if acesso != "liberado":
         return {"erro": "Acesso negado"}
     
-    car_data = CarSchema(
+    car_data = Car(
         placa=placa,
         modelo=modelo,
         marca=marca,
         ano=ano,
         preco=preco,
-        disponibilidade=disponibilidade
+        disponivel=disponibilidade,
+        foto="" # Adicionado campo obrigatório do schema
     )
 
     result = car_service.create(car_data.dict())

@@ -10,13 +10,13 @@
 
 ```bash
 git clone https://github.com/rafaelalm-Leal/gerenciador-estoque-carros.git
-cd gerenciador-estoque-carros
+cd gerenciador-estoque-carros/app/backend
 ```
 
 ### 2. Crie e ative o ambiente virtual
 
 ```bash
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate   # Linux/macOS
 # ou: .\venv\Scripts\Activate.ps1   # Windows
 ```
@@ -29,13 +29,11 @@ pip install -e ".[dev]"
 
 ### 4. Suba a API
 
-Na raiz do projeto:
-
 ```bash
-uvicorn main:app --host 0.0.0.0 --port 5000 --reload
+uvicorn src.main:app --reload
 ```
 
-- **Swagger:** http://localhost:5000/docs
+- **Swagger:** http://localhost:8000/docs
 
 ### 5. Testes
 

@@ -1,6 +1,8 @@
 import json
+import os
 
-ARQUIVO = "cars.json"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ARQUIVO = os.path.join(BASE_DIR, "cars.json")
 
 def salvar_carros(cars):
     with open(ARQUIVO, "w") as arquivo:
@@ -10,5 +12,5 @@ def carregar_carros():
     try:
         with open(ARQUIVO, "r") as arquivo:
             return json.load(arquivo)
-    except FileNotFoundError:
+    except (FileNotFoundError, json.JSONDecodeError):
         return []
