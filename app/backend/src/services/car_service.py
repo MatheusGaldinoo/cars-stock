@@ -1,40 +1,84 @@
-from sqlalchemy.orm import Session
-from src.repositories.entities import CarModel
+from src.repositories.entities import Car
 
-def list_cars(db: Session, placa: str | None = None):
-    query = db.query(CarModel)
-    if placa:
-        query = query.filter(CarModel.placa.contains(placa))
-    return query.all()
+def list_cars(conn, placa: str | None = None):
+    cursor = conn.cursor()
+    try:
+        if placa:
+            cursor.execute("SELECT placa, marca, modelo, ano, preco, foto FROM cars WHERE placa LIKE %s", (f"%{placa}%",))
+        else:
+            cursor.execute("SELECT placa, marca, modelo, ano, preco, foto FROM cars")
+        
+        rows = cursor.fetchall()
+        return [Car(placa=row[0], marca=row[1], modelo=row[2], ano=row[3], preco=float(row[4]), foto=row[5]) for row in rows]
+    finally:
+        cursor.close()
 
-def create_car(db: Session, car_data):
-    if get_car_internal(db, car_data.placa):
-        raise ValueError(f"Carro com placa {car_data.placa} já existe")
-    
-    db_car = CarModel(**car_data.model_dump())
-    db.add(db_car)
-    db.commit()
-    db.refresh(db_car)
-    return db_car
+def create_car(conn, car_data):
+    cursor = conn.cursor()
+    try:
+        existing = get_car_internal(conn, car_data.placa)
+        if existing:
+            raise ValueError(f"Carro com placa {car_data.placa} já existe")
+        
+        cursor.execute(
+            "INSERT INTO cars (placa, marca, modelo, ano, preco, foto) VALUES (%s, %s, %s, %s, %s, %s)",
+            (car_data.placa, car_data.marca, car_data.modelo, car_data.ano, car_data.preco, car_data.foto)
+        )
+        conn.commit()
+        return car_data
+    except Exception as e:
+        conn.rollback()
+        raise e
+    finally:
+        cursor.close()
 
-def get_car_internal(db: Session, placa: str):
-    return db.query(CarModel).filter(CarModel.placa == placa).first()
+def get_car_internal(conn, placa: str):
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT placa, marca, modelo, ano, preco, foto FROM cars WHERE placa = %s", (placa,))
+        row = cursor.fetchone()
+        if row:
+            return Car(placa=row[0], marca=row[1], modelo=row[2], ano=row[3], preco=float(row[4]), foto=row[5])
+        return None
+    finally:
+        cursor.close()
 
-def search_car(db: Session, placa: str) -> list[CarModel]:
-    return db.query(CarModel).filter(CarModel.placa.contains(placa)).all()
+def search_car(conn, placa: str) -> list[Car]:
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT placa, marca, modelo, ano, preco, foto FROM cars WHERE placa LIKE %s", (f"%{placa}%",))
+        rows = cursor.fetchall()
+        return [Car(placa=row[0], marca=row[1], modelo=row[2], ano=row[3], preco=float(row[4]), foto=row[5]) for row in rows]
+    finally:
+        cursor.close()
 
-def update_car(db: Session, placa: str, car_data: dict):
-    db_car = get_car_internal(db, placa)
-    
-    for key, value in car_data.items():
-        setattr(db_car, key, value)
-    
-    db.commit()
-    db.refresh(db_car)
-    return db_car
+def update_car(conn, placa: str, car_data: dict):
+    cursor = conn.cursor()
+    try:
+        db_car = get_car_internal(conn, placa)
+        if not db_car:
+            return None
+        
+        for key, value in car_data.items():
+            if value is not None:
+                cursor.execute(f"UPDATE cars SET {key} = %s WHERE placa = %s", (value, placa))
+        
+        conn.commit()
+        return get_car_internal(conn, placa)
+    except Exception as e:
+        conn.rollback()
+        raise e
+    finally:
+        cursor.close()
 
-def delete_car(db: Session, placa: str):
-    db_car = get_car_internal(db, placa)
-    db.delete(db_car)
-    db.commit()
-    return True
+def delete_car(conn, placa: str):
+    cursor = conn.cursor()
+    try:
+        cursor.execute("DELETE FROM cars WHERE placa = %s", (placa,))
+        conn.commit()
+        return True
+    except Exception as e:
+        conn.rollback()
+        raise e
+    finally:
+        cursor.close()

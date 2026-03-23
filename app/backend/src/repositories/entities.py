@@ -1,12 +1,10 @@
-from sqlalchemy import Column, Integer, String, Float
-from src.repositories.database import Base
+from dataclasses import dataclass
 
-class CarModel(Base):
-    __tablename__ = "cars"
-
-    placa = Column(String, primary_key=True, index=True)
-    marca = Column(String)
-    modelo = Column(String)
-    ano = Column(Integer)
-    preco = Column(Float)
-    foto = Column(String, nullable=True)
+@dataclass
+class Car:
+    placa: str
+    marca: str
+    modelo: str
+    ano: int
+    preco: float
+    foto: str | None = None

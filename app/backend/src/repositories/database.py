@@ -1,23 +1,48 @@
 import os
+import psycopg2
+from psycopg2 import pool
 from dotenv import load_dotenv
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from contextlib import contextmanager
 
 load_dotenv()
 
-SQLALCHEMY_DATABASE_URL = os.getenv(
+DATABASE_URL = os.getenv(
     "DATABASE_URL",
     "postgresql://postgres:postgres@localhost:5432/carros_db"
 )
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+connection_pool = None
 
-Base = declarative_base()
+def init_pool():
+    global connection_pool
+    if connection_pool is None:
+        connection_pool = pool.ThreadedConnectionPool(
+            minconn=1,
+            maxconn=10,
+            dsn=DATABASE_URL
+        )
 
+def get_connection():
+    if connection_pool is None:
+        init_pool()
+    return connection_pool.getconn()
+
+def release_connection(conn):
+    if connection_pool and conn:
+        connection_pool.putconn(conn)
+
+@contextmanager
 def get_db():
-    db = SessionLocal()
+    conn = None
     try:
-        yield db
+        conn = get_connection()
+        yield conn
     finally:
-        db.close()
+        if conn:
+            release_connection(conn)
+
+def close_pool():
+    global connection_pool
+    if connection_pool:
+        connection_pool.closeall()
+        connection_pool = None
