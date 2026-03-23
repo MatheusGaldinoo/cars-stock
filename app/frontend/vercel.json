@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "https://estoque-leal-car.onrender.com/$1"
-    }
-  ]
-}

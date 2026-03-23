@@ -10,12 +10,12 @@ interface CarModalProps {
 
 export const CarModal: React.FC<CarModalProps> = ({ isOpen, onClose, onSave, initialData }) => {
   const [formData, setFormData] = useState<Partial<Car>>({
-    placa: '',
-    marca: '',
-    modelo: '',
-    ano: new Date().getFullYear(),
-    preco: 0,
-    foto: ''
+    plate: '',
+    brand: '',
+    model: '',
+    year: new Date().getFullYear(),
+    price: 0,
+    photo: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -26,7 +26,7 @@ export const CarModal: React.FC<CarModalProps> = ({ isOpen, onClose, onSave, ini
       setFormData(initialData);
     } else {
       setFormData({
-        placa: '', marca: '', modelo: '', ano: new Date().getFullYear(), preco: 0, foto: ''
+        plate: '', brand: '', model: '', year: new Date().getFullYear(), price: 0, photo: ''
       });
     }
     setError('');
@@ -38,12 +38,12 @@ export const CarModal: React.FC<CarModalProps> = ({ isOpen, onClose, onSave, ini
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-        setError('A foto é muito grande. O limite é 2MB.');
+        setError('A photo é muito grande. O limite é 2MB.');
         return;
       }
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData({ ...formData, foto: reader.result as string });
+        setFormData({ ...formData, photo: reader.result as string });
       };
       reader.readAsDataURL(file);
     }
@@ -98,9 +98,9 @@ export const CarModal: React.FC<CarModalProps> = ({ isOpen, onClose, onSave, ini
           
           <div style={{ marginBottom: '1.25rem' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#555' }}>Foto do Veículo</label>
-            {formData.foto && (
+            {formData.photo && (
               <div style={{ marginBottom: '1rem' }}>
-                <img src={formData.foto} alt="Preview" style={{ maxWidth: '200px', borderRadius: '4px', border: '1px solid #ccc' }} />
+                <img src={formData.photo} alt="Preview" style={{ maxWidth: '200px', borderRadius: '4px', border: '1px solid #ccc' }} />
               </div>
             )}
             <input 
@@ -117,8 +117,8 @@ export const CarModal: React.FC<CarModalProps> = ({ isOpen, onClose, onSave, ini
               <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#555' }}>Placa do Carro</label>
               <input 
                 type="text" required disabled={isEdit}
-                value={formData.placa}
-                onChange={e => setFormData({...formData, placa: e.target.value.toUpperCase()})}
+                value={formData.plate}
+                onChange={e => setFormData({...formData, plate: e.target.value.toUpperCase()})}
                 style={{ width: '100%', padding: '0.75rem', border: '1px solid #ccc', borderRadius: '4px' }}
                 placeholder="Ex: ABC1234"
               />
@@ -127,8 +127,8 @@ export const CarModal: React.FC<CarModalProps> = ({ isOpen, onClose, onSave, ini
               <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#555' }}>Marca</label>
               <input 
                 type="text" required
-                value={formData.marca}
-                onChange={e => setFormData({...formData, marca: e.target.value})}
+                value={formData.brand}
+                onChange={e => setFormData({...formData, brand: e.target.value})}
                 style={{ width: '100%', padding: '0.75rem', border: '1px solid #ccc', borderRadius: '4px' }}
                 placeholder="Ex: Toyota"
               />
@@ -140,8 +140,8 @@ export const CarModal: React.FC<CarModalProps> = ({ isOpen, onClose, onSave, ini
               <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#555' }}>Modelo</label>
               <input 
                 type="text" required
-                value={formData.modelo}
-                onChange={e => setFormData({...formData, modelo: e.target.value})}
+                value={formData.model}
+                onChange={e => setFormData({...formData, model: e.target.value})}
                 style={{ width: '100%', padding: '0.75rem', border: '1px solid #ccc', borderRadius: '4px' }}
                 placeholder="Ex: Corolla"
               />
@@ -150,8 +150,8 @@ export const CarModal: React.FC<CarModalProps> = ({ isOpen, onClose, onSave, ini
               <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#555' }}>Ano</label>
               <input 
                 type="number" required min="1900" max="2100"
-                value={formData.ano}
-                onChange={e => setFormData({...formData, ano: parseInt(e.target.value)})}
+                value={formData.year}
+                onChange={e => setFormData({...formData, year: parseInt(e.target.value)})}
                 style={{ width: '100%', padding: '0.75rem', border: '1px solid #ccc', borderRadius: '4px' }}
               />
             </div>
@@ -161,8 +161,8 @@ export const CarModal: React.FC<CarModalProps> = ({ isOpen, onClose, onSave, ini
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#555' }}>Preço (R$)</label>
             <input 
               type="number" required min="0" step="0.01"
-              value={formData.preco}
-              onChange={e => setFormData({...formData, preco: parseFloat(e.target.value)})}
+              value={formData.price}
+              onChange={e => setFormData({...formData, price: parseFloat(e.target.value)})}
               style={{ width: '100%', padding: '0.75rem', border: '1px solid #ccc', borderRadius: '4px' }}
               placeholder="Ex: 50000.00"
             />

@@ -34,15 +34,15 @@ export const Home: React.FC = () => {
     loadCars();
   }, []);
 
-  const handleSearch = async (placa: string) => {
+  const handleSearch = async (plate: string) => {
     try {
       setLoading(true);
       setError(null);
-      const data = await fetchCars(placa.toUpperCase());
+      const data = await fetchCars(plate.toUpperCase());
       setCars(data);
       
-      if (data.length === 0 && placa.trim() !== '') {
-        setError(`Nenhum carro encontrado com a placa ${placa.toUpperCase()}`);
+      if (data.length === 0 && plate.trim() !== '') {
+        setError(`Nenhum carro encontrado com a placa ${plate.toUpperCase()}`);
       }
     } catch (err) {
       setError('Ocorreu um erro ao buscar os dados.');
@@ -85,12 +85,12 @@ export const Home: React.FC = () => {
     }
   };
 
-  const handleDeleteClick = async (placa: string) => {
+  const handleDeleteClick = async (plate: string) => {
     if (checkAuth()) {
-      if (window.confirm(`ATENÇÃO! Deseja remover o carro ${placa}?`)) {
+      if (window.confirm(`ATENÇÃO! Deseja remover o carro ${plate}?`)) {
         try {
           setLoading(true);
-          await deleteCar(placa);
+          await deleteCar(plate);
           await loadCars();
         } catch (err) {
           alert('Erro ao excluir carro.');
@@ -103,7 +103,7 @@ export const Home: React.FC = () => {
   const handleSaveCar = async (carData: any) => {
     try {
       if (editingCar) {
-        await updateCar(editingCar.placa, carData);
+        await updateCar(editingCar.plate, carData);
       } else {
         await createCar(carData);
       }
@@ -136,7 +136,7 @@ export const Home: React.FC = () => {
         ) : (
           <div className="grid-x grid-margin-x grid-margin-y small-up-1 medium-up-2 large-up-3">
             {cars.map((car) => (
-              <div className="cell" key={car.placa}>
+              <div className="cell" key={car.plate}>
                 <CarCard 
                   car={car} 
                   onEdit={handleEditClick} 

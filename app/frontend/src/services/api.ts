@@ -13,7 +13,7 @@ export interface Car {
   model: string;
   year: number;
   price: number;
-  foto?: string | null;
+  photo?: string | null;
 }
 
 export const fetchCars = async (plate?: string): Promise<Car[]> => {
@@ -28,7 +28,7 @@ export const fetchCarByPlate = async (plate: string): Promise<Car> => {
   return response.data;
 };
 
-export const createCar = async (carData: Omit<Car, "foto"> & { foto?: string | null }): Promise<Car> => {
+export const createCar = async (carData: Omit<Car, "photo"> & { photo?: string | null }): Promise<Car> => {
   const response = await api.post('/cars/', carData);
   return response.data;
 };

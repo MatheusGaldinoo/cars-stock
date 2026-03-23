@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 
 interface HeaderProps {
-  onSearch: (placa: string) => void;
+  onSearch: (plate: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ onSearch }) => {
-  const [placa, setPlaca] = useState('');
+  const [plate, setPlate] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setPlaca(value);
+    setPlate(value);
     onSearch(value);
   };
 
@@ -38,7 +38,7 @@ export const Header: React.FC<HeaderProps> = ({ onSearch }) => {
               <input 
                 type="text" 
                 placeholder="Pesquisar Carro por Placa..." 
-                value={placa}
+                value={plate}
                 onChange={handleChange}
               />
             </div>
