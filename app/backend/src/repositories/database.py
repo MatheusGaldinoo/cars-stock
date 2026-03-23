@@ -1,15 +1,11 @@
 import os
-import psycopg2
 from psycopg2 import pool
 from dotenv import load_dotenv
 from contextlib import contextmanager
 
 load_dotenv()
 
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "postgresql://postgres:postgres@localhost:5432/carros_db"
-)
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 connection_pool = None
 

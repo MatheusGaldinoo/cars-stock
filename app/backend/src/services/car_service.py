@@ -1,15 +1,15 @@
 from src.repositories.entities import Car
 
-def list_cars(conn, placa: str | None = None):
+def list_cars(conn, plate: str | None = None):
     cursor = conn.cursor()
     try:
-        if placa:
-            cursor.execute("SELECT placa, marca, modelo, ano, preco, foto FROM cars WHERE placa LIKE %s", (f"%{placa}%",))
+        if plate:
+            cursor.execute("SELECT plate, brand, model, year, price, photo FROM cars WHERE plate LIKE %s", (f"%{plate}%",))
         else:
-            cursor.execute("SELECT placa, marca, modelo, ano, preco, foto FROM cars")
+            cursor.execute("SELECT plate, brand, model, year, price, photo FROM cars")
         
         rows = cursor.fetchall()
-        return [Car(placa=row[0], marca=row[1], modelo=row[2], ano=row[3], preco=float(row[4]), foto=row[5]) for row in rows]
+        return [Car(plate=row[0], brand=row[1], model=row[2], year=row[3], price=float(row[4]), photo=row[5]) for row in rows]
     finally:
         cursor.close()
 
@@ -32,13 +32,13 @@ def create_car(conn, car_data):
     finally:
         cursor.close()
 
-def get_car_internal(conn, placa: str):
+def get_car_internal(conn, plate: str):
     cursor = conn.cursor()
     try:
-        cursor.execute("SELECT placa, marca, modelo, ano, preco, foto FROM cars WHERE placa = %s", (placa,))
+        cursor.execute("SELECT plate, brand, model, year, price, photo FROM cars WHERE plate = %s", (plate,))
         row = cursor.fetchone()
         if row:
-            return Car(placa=row[0], marca=row[1], modelo=row[2], ano=row[3], preco=float(row[4]), foto=row[5])
+            return Car(plate=row[0], brand=row[1], model=row[2], year=row[3], price=float(row[4]), photo=row[5])
         return None
     finally:
         cursor.close()

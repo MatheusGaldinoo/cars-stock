@@ -2,9 +2,9 @@ from dataclasses import dataclass
 
 @dataclass
 class Car:
-    placa: str
-    marca: str
-    modelo: str
-    ano: int
-    preco: float
-    foto: str | None = None
+    plate: str
+    brand: str
+    model: str
+    year: int
+    price: float
+    photo: str | None = None
