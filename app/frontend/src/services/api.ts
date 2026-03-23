@@ -8,23 +8,23 @@ const api = axios.create({
 });
 
 export interface Car {
-  placa: string;
-  marca: string;
-  modelo: string;
-  ano: number;
-  preco: number;
+  plate: string;
+  brand: string;
+  model: string;
+  year: number;
+  price: number;
   foto?: string | null;
 }
 
-export const fetchCars = async (placa?: string): Promise<Car[]> => {
+export const fetchCars = async (plate?: string): Promise<Car[]> => {
   const response = await api.get('/cars/', {
-    params: { placa }
+    params: { plate }
   });
   return response.data;
 };
 
-export const fetchCarByPlaca = async (placa: string): Promise<Car> => {
-  const response = await api.get(`/cars/${placa}`);
+export const fetchCarByPlate = async (plate: string): Promise<Car> => {
+  const response = await api.get(`/cars/${plate}`);
   return response.data;
 };
 
@@ -33,13 +33,13 @@ export const createCar = async (carData: Omit<Car, "foto"> & { foto?: string | n
   return response.data;
 };
 
-export const updateCar = async (placa: string, carData: Partial<Car>): Promise<Car> => {
-  const response = await api.patch(`/cars/${placa}`, carData);
+export const updateCar = async (plate: string, carData: Partial<Car>): Promise<Car> => {
+  const response = await api.patch(`/cars/${plate}`, carData);
   return response.data;
 };
 
-export const deleteCar = async (placa: string): Promise<void> => {
-  await api.delete(`/cars/${placa}`);
+export const deleteCar = async (plate: string): Promise<void> => {
+  await api.delete(`/cars/${plate}`);
 };
 
 export default api;

@@ -4,15 +4,15 @@ from src.schemas.car_schema import CarCreate
 
 def test_service_create_car(db_session):
     car_data = CarCreate(
-        placa="SERV1", marca="S", modelo="X", ano=2021, preco=100.0
+        plate="SERV1", brand="S", model="X", year=2021, price=100.0
     )
     result = car_service.create_car(db_session, car_data)
-    assert result.placa == "SERV1"
-    assert result.marca == "S"
+    assert result.plate == "SERV1"
+    assert result.brand == "S"
 
-def test_service_create_duplicate_placa(db_session):
+def test_service_create_duplicate_plate(db_session):
     car_data = CarCreate(
-        placa="DUP1", marca="D", modelo="X", ano=2021, preco=100.0
+        plate="DUP1", brand="D", model="X", year=2021, price=100.0
     )
     car_service.create_car(db_session, car_data)
     
@@ -23,12 +23,12 @@ def test_service_create_duplicate_placa(db_session):
 
 def test_service_search_car(db_session):
     car_data = CarCreate(
-        placa="SRCH1", marca="S", modelo="X", ano=2021, preco=100.0
+        plate="SRCH1", brand="S", model="X", year=2021, price=100.0
     )
     car_service.create_car(db_session, car_data)
     
     result = car_service.search_car(db_session, "SRCH1")
-    assert result.placa == "SRCH1"
+    assert result.plate == "SRCH1"
 
 def test_service_search_not_found(db_session):
     with pytest.raises(ValueError) as exc:
@@ -37,7 +37,7 @@ def test_service_search_not_found(db_session):
 
 def test_service_sell_car(db_session):
     car_data = CarCreate(
-        placa="SELL_SRV", marca="S", modelo="X", ano=2021, preco=100.0, disponibilidade=True
+        plate="SELL_SRV", brand="S", model="X", year=2021, price=100.0, disponibilidade=True
     )
     car_service.create_car(db_session, car_data)
     

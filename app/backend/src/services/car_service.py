@@ -16,13 +16,13 @@ def list_cars(conn, plate: str | None = None):
 def create_car(conn, car_data):
     cursor = conn.cursor()
     try:
-        existing = get_car_internal(conn, car_data.placa)
+        existing = get_car_internal(conn, car_data.plate)
         if existing:
-            raise ValueError(f"Carro com placa {car_data.placa} já existe")
+            raise ValueError(f"Carro com placa {car_data.plate} já existe")
         
         cursor.execute(
-            "INSERT INTO cars (placa, marca, modelo, ano, preco, foto) VALUES (%s, %s, %s, %s, %s, %s)",
-            (car_data.placa, car_data.marca, car_data.modelo, car_data.ano, car_data.preco, car_data.foto)
+            "INSERT INTO cars (plate, brand, model, year, price, photo) VALUES (%s, %s, %s, %s, %s, %s)",
+            (car_data.plate, car_data.brand, car_data.model, car_data.year, car_data.price, car_data.photo)
         )
         conn.commit()
         return car_data
@@ -43,38 +43,38 @@ def get_car_internal(conn, plate: str):
     finally:
         cursor.close()
 
-def search_car(conn, placa: str) -> list[Car]:
+def search_car(conn, plate: str) -> list[Car]:
     cursor = conn.cursor()
     try:
-        cursor.execute("SELECT placa, marca, modelo, ano, preco, foto FROM cars WHERE placa LIKE %s", (f"%{placa}%",))
+        cursor.execute("SELECT plate, brand, model, year, price, photo FROM cars WHERE plate LIKE %s", (f"%{plate}%",))
         rows = cursor.fetchall()
-        return [Car(placa=row[0], marca=row[1], modelo=row[2], ano=row[3], preco=float(row[4]), foto=row[5]) for row in rows]
+        return [Car(plate=row[0], brand=row[1], model=row[2], year=row[3], price=float(row[4]), photo=row[5]) for row in rows]
     finally:
         cursor.close()
 
-def update_car(conn, placa: str, car_data: dict):
+def update_car(conn, plate: str, car_data: dict):
     cursor = conn.cursor()
     try:
-        db_car = get_car_internal(conn, placa)
+        db_car = get_car_internal(conn, plate)
         if not db_car:
             return None
         
         for key, value in car_data.items():
             if value is not None:
-                cursor.execute(f"UPDATE cars SET {key} = %s WHERE placa = %s", (value, placa))
+                cursor.execute(f"UPDATE cars SET {key} = %s WHERE plate = %s", (value, plate))
         
         conn.commit()
-        return get_car_internal(conn, placa)
+        return get_car_internal(conn, plate)
     except Exception as e:
         conn.rollback()
         raise e
     finally:
         cursor.close()
 
-def delete_car(conn, placa: str):
+def delete_car(conn, plate: str):
     cursor = conn.cursor()
     try:
-        cursor.execute("DELETE FROM cars WHERE placa = %s", (placa,))
+        cursor.execute("DELETE FROM cars WHERE plate = %s", (plate,))
         conn.commit()
         return True
     except Exception as e:
