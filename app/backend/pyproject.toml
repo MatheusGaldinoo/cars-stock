@@ -13,7 +13,6 @@ dependencies = [
     "uvicorn",
     "jinja2",
     "python-multipart",
-    "sqlalchemy",
     "pydantic",
     "psycopg2-binary",
     "python-dotenv",

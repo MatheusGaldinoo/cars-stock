@@ -2,22 +2,22 @@ from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 class CarBase(BaseModel):
-    placa: str
-    marca: str
-    modelo: str
-    ano: int
-    preco: float
-    foto: Optional[str] = None
+    plate: str
+    brand: str
+    model: str
+    year: int
+    price: float
+    photo: Optional[str] = None
 
 class CarCreate(CarBase):
     pass
 
 class CarUpdate(BaseModel):
-    marca: Optional[str] = None
-    modelo: Optional[str] = None
-    ano: Optional[int] = None
-    preco: Optional[float] = None
-    foto: Optional[str] = None
+    brand: Optional[str] = None
+    model: Optional[str] = None
+    year: Optional[int] = None
+    price: Optional[float] = None
+    photo: Optional[str] = None
 
 class CarResponse(CarBase):
     model_config = ConfigDict(from_attributes=True)
