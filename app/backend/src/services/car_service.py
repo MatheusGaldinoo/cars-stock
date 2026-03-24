@@ -1,5 +1,17 @@
 from src.repositories.entities import Car
 
+def parse_row(row):
+    if isinstance(row, dict):
+        return Car(
+            plate=row.get("plate"),
+            brand=row.get("brand"),
+            model=row.get("model"),
+            year=row.get("year"),
+            price=float(row.get("price", 0)),
+            photo=row.get("photo")
+        )
+    return Car(plate=row[0], brand=row[1], model=row[2], year=row[3], price=float(row[4]), photo=row[5])
+
 def list_cars(conn, plate: str | None = None):
     cursor = conn.cursor()
     try:
@@ -9,7 +21,7 @@ def list_cars(conn, plate: str | None = None):
             cursor.execute("SELECT plate, brand, model, year, price, photo FROM cars")
         
         rows = cursor.fetchall()
-        return [Car(plate=row[0], brand=row[1], model=row[2], year=row[3], price=float(row[4]), photo=row[5]) for row in rows]
+        return [parse_row(row) for row in rows]
     finally:
         cursor.close()
 
@@ -38,7 +50,7 @@ def get_car_internal(conn, plate: str):
         cursor.execute("SELECT plate, brand, model, year, price, photo FROM cars WHERE plate = %s", (plate,))
         row = cursor.fetchone()
         if row:
-            return Car(plate=row[0], brand=row[1], model=row[2], year=row[3], price=float(row[4]), photo=row[5])
+            return parse_row(row)
         return None
     finally:
         cursor.close()
@@ -48,7 +60,7 @@ def search_car(conn, plate: str) -> list[Car]:
     try:
         cursor.execute("SELECT plate, brand, model, year, price, photo FROM cars WHERE plate LIKE %s", (f"%{plate}%",))
         rows = cursor.fetchall()
-        return [Car(plate=row[0], brand=row[1], model=row[2], year=row[3], price=float(row[4]), photo=row[5]) for row in rows]
+        return [parse_row(row) for row in rows]
     finally:
         cursor.close()
 
