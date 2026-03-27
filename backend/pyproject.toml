@@ -16,6 +16,7 @@ dependencies = [
     "pydantic",
     "psycopg2-binary",
     "python-dotenv",
+    "requests"
 ]
 
 [project.optional-dependencies]

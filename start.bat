@@ -7,14 +7,14 @@ echo     INICIANDO GERENCIADOR DE ESTOQUE - LEAL CAR
 echo ===================================================
 echo.
 echo [1/3] Compilando e gerando arquivos do Frontend...
-cd app\frontend
+cd frontend
 call npm install
 call npm run build
-cd ..\..
+cd ..
 
 echo.
 echo [2/3] Preparando o Backend (Python)...
-cd app\backend
+cd backend
 IF NOT EXIST "venv\Scripts\activate.bat" GOTO erro_venv
 
 call venv\Scripts\activate.bat

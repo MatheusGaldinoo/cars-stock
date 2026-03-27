@@ -9,7 +9,7 @@
 ### 1. Entre no diretório do backend
 
 ```bash
-cd app/backend
+cd backend
 ```
 
 ### 2. Crie e ative o ambiente virtual

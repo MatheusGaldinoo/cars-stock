@@ -6,8 +6,8 @@ Este é um projeto desenvolvido para a concessionária Leal Car.
 
 O projeto é dividido em duas partes principais:
 
-1. **`app/backend/`**: API construída com **FastAPI** e **SQLite**.
-2. **`app/frontend/`**: Interface web moderna construída com **React**, **Vite** e **TypeScript**.
+1. **`backend/`**: API construída com **FastAPI** e **SQLite**.
+2. **`frontend/`**: Interface web moderna construída com **React**, **Vite** e **TypeScript**.
 ---
 
 ## Como Rodar o Projeto
@@ -29,4 +29,4 @@ ngrok http 8000
 5. Copie esse link e abra em qualquer dispositivo.
 
 ---
-*Para desenvolvimento tradicional ou edição separada de cada pasta, consulte o README de cada diretório individual (`app/backend` e `app/frontend`).*
+*Para desenvolvimento tradicional ou edição separada de cada pasta, consulte o README de cada diretório individual (`backend` e `frontend`).*

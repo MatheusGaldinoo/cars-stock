@@ -2,14 +2,14 @@
 
 ## Pré-requisitos
 - [Node.js](https://nodejs.org/) (versão 18+ recomendada)
-- O **backend** (`app/backend`) deve estar rodando para que a API funcione.
+- O **backend** (`backend`) deve estar rodando para que a API funcione.
 
 ## Como Executar
 
 ### 1. Entre no diretório do frontend
 
 ```bash
-cd app/frontend
+cd frontend
 ```
 
 ### 2. Instale as dependências
