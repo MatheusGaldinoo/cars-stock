@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  # 1. SERVIDOR DO BACKEND
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cars_stock_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      # Sincroniza em tempo real a pasta ./backend do seu PC com o /app do Docker
+      - ./backend:/app
+    env_file:
+      # Injeta automaticamente as suas credenciais do Supabase
+      - ./backend/.env
+    # Comando de inicialização com Hot-Reload (live server)
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # 2. SERVIDOR DO FRONTEND
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: cars_stock_frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      # Sincronização em tempo real do frontend
+      - ./frontend:/app
+      # Ignora a pasta node_modules do seu PC dando prioridade à do Docker
+      - /app/node_modules
+    environment:
+      # Para o Vite/React entender onde o Backend está
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    # Comando de inicialização do React liberando a rede (--host) para fora do container
+    command: npm run dev -- --host 0.0.0.0 --port 5173
