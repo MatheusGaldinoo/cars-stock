@@ -14,6 +14,7 @@ export interface Car {
   year: number;
   price: number;
   photo?: string | null;
+  available?: boolean | true;
 }
 
 export interface CompanySettings {
