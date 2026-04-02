@@ -1,4 +1,4 @@
-# Ambiente virtual (Python)
+# Ambiente virtual
 venv/
 
 # Arquivos do Python
@@ -20,7 +20,7 @@ dist-ssr/
 *.db
 *.sqlite3
 
-# Ambiente
+# Variáveis Sensíveis
 .env
 .env.*
 !.env.example
