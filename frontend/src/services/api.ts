@@ -36,7 +36,7 @@ export const fetchCarByPlate = async (plate: string): Promise<Car> => {
   return response.data;
 };
 
-export const createCar = async (carData: Omit<Car, "photo"> & { photo?: string | null }): Promise<Car> => {
+export const createCar = async (carData: Partial<Car>): Promise<Car> => {
   const response = await api.post('/cars/', carData);
   return response.data;
 };
