@@ -7,7 +7,7 @@ def test_create_car(client):
         "model": "Corolla",
         "year": 2023,
         "price": 150000.0,
-        "disponibilidade": True
+        "available": True
     }
     response = client.post("/cars/", json=car_data)
     assert response.status_code == 201
@@ -40,7 +40,7 @@ def test_sell_car(client):
     
     response = client.post(f"/cars/{car_data['plate']}/sell")
     assert response.status_code == 200
-    assert response.json()["disponibilidade"] is False
+    assert response.json()["available"] is False
 
 def test_delete_car(client):
     car_data = {

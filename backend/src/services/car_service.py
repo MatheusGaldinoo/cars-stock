@@ -8,17 +8,18 @@ def parse_row(row):
             model=row.get("model"),
             year=row.get("year"),
             price=float(row.get("price", 0)),
-            photo=row.get("photo")
+            photo=row.get("photo"),
+            available=row.get("available", True)
         )
-    return Car(plate=row[0], brand=row[1], model=row[2], year=row[3], price=float(row[4]), photo=row[5])
+    return Car(plate=row[0], brand=row[1], model=row[2], year=row[3], price=float(row[4]), photo=row[5], available=row[6] if len(row) > 6 else True)
 
 def list_cars(conn, plate: str | None = None):
     cursor = conn.cursor()
     try:
         if plate:
-            cursor.execute("SELECT plate, brand, model, year, price, photo FROM cars WHERE plate LIKE %s", (f"%{plate}%",))
+            cursor.execute("SELECT plate, brand, model, year, price, photo, available FROM cars WHERE plate LIKE %s", (f"%{plate}%",))
         else:
-            cursor.execute("SELECT plate, brand, model, year, price, photo FROM cars")
+            cursor.execute("SELECT plate, brand, model, year, price, photo, available FROM cars")
         
         rows = cursor.fetchall()
         return [parse_row(row) for row in rows]
@@ -33,8 +34,8 @@ def create_car(conn, car_data):
             raise ValueError(f"Carro com placa {car_data.plate} já existe")
         
         cursor.execute(
-            "INSERT INTO cars (plate, brand, model, year, price, photo) VALUES (%s, %s, %s, %s, %s, %s)",
-            (car_data.plate, car_data.brand, car_data.model, car_data.year, car_data.price, car_data.photo)
+            "INSERT INTO cars (plate, brand, model, year, price, photo, available) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+            (car_data.plate, car_data.brand, car_data.model, car_data.year, car_data.price, car_data.photo, car_data.available)
         )
         conn.commit()
         return car_data
@@ -47,7 +48,7 @@ def create_car(conn, car_data):
 def get_car_internal(conn, plate: str):
     cursor = conn.cursor()
     try:
-        cursor.execute("SELECT plate, brand, model, year, price, photo FROM cars WHERE plate = %s", (plate,))
+        cursor.execute("SELECT plate, brand, model, year, price, photo, available FROM cars WHERE plate = %s", (plate,))
         row = cursor.fetchone()
         if row:
             return parse_row(row)
@@ -58,7 +59,7 @@ def get_car_internal(conn, plate: str):
 def search_car(conn, plate: str) -> list[Car]:
     cursor = conn.cursor()
     try:
-        cursor.execute("SELECT plate, brand, model, year, price, photo FROM cars WHERE plate LIKE %s", (f"%{plate}%",))
+        cursor.execute("SELECT plate, brand, model, year, price, photo, available FROM cars WHERE plate LIKE %s", (f"%{plate}%",))
         rows = cursor.fetchall()
         return [parse_row(row) for row in rows]
     finally:

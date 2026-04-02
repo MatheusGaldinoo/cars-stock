@@ -37,9 +37,9 @@ def test_service_search_not_found(db_session):
 
 def test_service_sell_car(db_session):
     car_data = CarCreate(
-        plate="SELL_SRV", brand="S", model="X", year=2021, price=100.0, disponibilidade=True
+        plate="SELL_SRV", brand="S", model="X", year=2021, price=100.0, available=True
     )
     car_service.create_car(db_session, car_data)
     
     result = car_service.sell_car(db_session, "SELL_SRV")
-    assert result.disponibilidade is False
+    assert result.available is False
