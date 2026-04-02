@@ -33,7 +33,8 @@ services:
       - /app/node_modules
     environment:
       # Para o Vite/React entender onde o Backend está
-      - VITE_API_URL=http://localhost:8000
+      - BACKEND_URL=http://localhost:8000
+
     depends_on:
       - backend
     # Comando de inicialização do React liberando a rede (--host) para fora do container
