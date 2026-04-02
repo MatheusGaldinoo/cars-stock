@@ -1,5 +1,7 @@
 # Sistema de Gerenciamento de Estoque de Carros 🚗
 
+<img width="1808" height="924" alt="image" src="https://github.com/user-attachments/assets/7ff7376e-7ac9-4719-afbb-19c3e6edcd1f" />
+
 ## Estrutura do Projeto
 
 O projeto é dividido em duas partes principais, sob o modelo Monorepo:
