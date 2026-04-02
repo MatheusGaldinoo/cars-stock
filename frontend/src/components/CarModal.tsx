@@ -4,7 +4,7 @@ import type { Car } from '../services/api';
 interface CarModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (carData: any) => Promise<void>;
+  onSave: (carData: Partial<Car>) => Promise<void>;
   initialData?: Car | null;
 }
 
@@ -56,8 +56,12 @@ export const CarModal: React.FC<CarModalProps> = ({ isOpen, onClose, onSave, ini
       setError('');
       await onSave(formData);
       onClose();
-    } catch (err: any) {
-      setError(err.response?.data?.detail || 'Erro ao salvar o veículo. Verifique se a placa já existe.');
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message || 'Erro ao salvar o veículo. Verifique se a placa já existe.');
+      } else {
+        setError('Erro ao salvar o veículo. Verifique se a placa já existe.');
+      }
     } finally {
       setLoading(false);
     }

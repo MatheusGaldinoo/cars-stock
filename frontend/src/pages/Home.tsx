@@ -39,7 +39,7 @@ export const Home: React.FC = () => {
       setError(null);
       const data = await fetchCars();
       setCars(data);
-    } catch (err) {
+    } catch {
       setError('Erro ao carregar os carros.');
     } finally {
       setLoading(false);
@@ -60,7 +60,7 @@ export const Home: React.FC = () => {
       if (data.length === 0 && plate.trim() !== '') {
         setError(`Nenhum carro encontrado com a placa ${plate.toUpperCase()}`);
       }
-    } catch (err) {
+    } catch {
       setError('Ocorreu um erro ao buscar os dados.');
     } finally {
       setLoading(false);
@@ -107,7 +107,7 @@ export const Home: React.FC = () => {
           setLoading(true);
           await deleteCar(plate);
           await loadCars();
-        } catch (err) {
+        } catch {
           alert('Erro ao excluir carro.');
           setLoading(false);
         }
@@ -115,7 +115,7 @@ export const Home: React.FC = () => {
     }
   };
 
-  const handleSaveCar = async (carData: any) => {
+  const handleSaveCar = async (carData: Partial<Car>) => {
     try {
       if (editingCar) {
         await updateCar(editingCar.plate, carData);
