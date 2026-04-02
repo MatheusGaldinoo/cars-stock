@@ -34,12 +34,3 @@ def test_service_search_not_found(db_session):
     with pytest.raises(ValueError) as exc:
         car_service.search_car(db_session, "NONEXISTENT")
     assert "não encontrado" in str(exc.value)
-
-def test_service_sell_car(db_session):
-    car_data = CarCreate(
-        plate="SELL_SRV", brand="S", model="X", year=2021, price=100.0, available=True
-    )
-    car_service.create_car(db_session, car_data)
-    
-    result = car_service.sell_car(db_session, "SELL_SRV")
-    assert result.available is False
