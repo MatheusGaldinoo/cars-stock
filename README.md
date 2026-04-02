@@ -39,4 +39,4 @@ O sistema utiliza o Supabase como banco de dados. Configure as variáveis de amb
 - `DATABASE_URL`: URL do seu projeto Supabase
 
 No frontend, indique a API que a interface irá consumir. No nosso caso, a do Render:
-- `VITE_API_URL`: URL do seu backend
+- `BACKEND_URL`: URL do seu backend
