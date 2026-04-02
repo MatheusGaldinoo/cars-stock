@@ -21,7 +21,11 @@ def create_car(car_data: CarCreate):
 @router.get("/{plate}", response_model=CarResponse)
 def search_car(plate: str):
     with get_db() as db:
-        return car_service.search_car(db, plate)
+        result = car_service.search_car(db, plate)
+        if not result:
+            from fastapi import HTTPException
+            raise HTTPException(status_code=404, detail="Car not found")
+        return result[0]
 
 
 @router.patch("/{plate}", response_model=CarResponse)
