@@ -21,3 +21,7 @@ def mock_cursor(mock_conn):
     mock_cursor = MagicMock()
     mock_conn.cursor.return_value = mock_cursor
     return mock_cursor
+
+@pytest.fixture(scope="function")
+def db_session(mock_conn, mock_cursor):
+    return mock_conn
