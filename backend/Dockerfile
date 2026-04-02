@@ -14,7 +14,8 @@ COPY pyproject.toml ./
 COPY . .
 
 # Instala as dependências de desenvolvedor (fastapi, uvicorn, pytest, etc)
-RUN pip install -e ".[dev]"
+RUN pip install .
+
 
 # Libera a porta 8000 para acesso
 EXPOSE 8000
