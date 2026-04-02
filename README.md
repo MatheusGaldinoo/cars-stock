@@ -4,12 +4,12 @@
 
 O projeto é dividido em duas partes principais, sob o modelo Monorepo:
 
-1. **`backend/`**: API construída com **FastAPI** (Python) conectando a um Banco de Dados **Supabase (PostgreSQL na Nuvem)**.
+1. **`backend/`**: API construída com **FastAPI (Python)** conectando a um Banco de Dados **Supabase (PostgreSQL na Nuvem)**.
 2. **`frontend/`**: Interface web moderna construída com **React**, **Vite**, **TypeScript** e **Tailwind CSS**.
 
 ---
 
-## Como Rodar o Projeto (Jeito Recomendado 🐳)
+## Como Rodar o Projeto
 
 A maneira mais fácil e moderna de executar todo o sistema é utilizando o **Docker**. Você não precisará ter o Python nem o Node instalados na sua máquina, e os containers se conectarão automaticamente ao seu Supabase.
 
@@ -19,9 +19,8 @@ A maneira mais fácil e moderna de executar todo o sistema é utilizando o **Doc
 ```bash
 docker compose up --build
 ```
-*(Se necessário, use `sudo` no Linux).*
 
-3. Aguarde o download e inicialização. Pronto!
+3. Aguarde a inicialização.
    - Frontend: acesse [http://localhost:5173](http://localhost:5173)
    - Backend/API: acesso [http://localhost:8000](http://localhost:8000)
 
@@ -34,8 +33,10 @@ Consulte a seção `Como executar` nos manuais individuais de cada pasta:
 
 ---
 
-## Configuração do Banco de Dados
+## Configuração de variáveis
 
 O sistema utiliza o Supabase como banco de dados. Configure as variáveis de ambiente no arquivo `.env` do backend:
-- `SUPABASE_URL`: URL do seu projeto Supabase
-- `SUPABASE_KEY`: Chave API do Supabase
+- `DATABASE_URL`: URL do seu projeto Supabase
+
+No frontend, indique a API que a interface irá consumir. No nosso caso, a do Render:
+- `VITE_API_URL`: URL do seu backend
