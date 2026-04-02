@@ -8,6 +8,7 @@ class CarBase(BaseModel):
     year: int
     price: float
     photo: Optional[str] = None
+    available: Optional[bool] = True
 
 class CarCreate(CarBase):
     pass
@@ -18,6 +19,7 @@ class CarUpdate(BaseModel):
     year: Optional[int] = None
     price: Optional[float] = None
     photo: Optional[str] = None
+    available: Optional[bool] = None
 
 class CarResponse(CarBase):
     model_config = ConfigDict(from_attributes=True)

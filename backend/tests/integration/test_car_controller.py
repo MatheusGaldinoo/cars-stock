@@ -1,4 +1,3 @@
-import pytest
 from src.schemas.car_schema import CarResponse
 
 def test_create_car(client):

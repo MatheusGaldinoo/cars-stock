@@ -8,3 +8,4 @@ class Car:
     year: int
     price: float
     photo: str | None = None
+    available: bool = True
