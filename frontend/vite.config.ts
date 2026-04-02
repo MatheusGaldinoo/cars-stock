@@ -10,6 +10,11 @@ export default defineConfig(({ mode }) => {
     css: {
       lightningcss: {
         errorRecovery: true
+      },
+      preprocessorOptions: {
+        scss: {
+          silenceDeprecations: ['import', 'global-builtin', 'legacy-js-api', 'if-function']
+        }
       }
     },
     define: {
