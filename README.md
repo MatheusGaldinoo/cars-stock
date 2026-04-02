@@ -1,32 +1,41 @@
-# Sistema da Concessionária Leal Car 🚗
-
-Este é um projeto desenvolvido para a concessionária Leal Car.
+# Sistema de Gerenciamento de Estoque de Carros 🚗
 
 ## Estrutura do Projeto
 
-O projeto é dividido em duas partes principais:
+O projeto é dividido em duas partes principais, sob o modelo Monorepo:
 
-1. **`app/backend/`**: API construída com **FastAPI** e **SQLite**.
-2. **`app/frontend/`**: Interface web moderna construída com **React**, **Vite** e **TypeScript**.
+1. **`backend/`**: API construída com **FastAPI** (Python) conectando a um Banco de Dados **Supabase (PostgreSQL na Nuvem)**.
+2. **`frontend/`**: Interface web moderna construída com **React**, **Vite**, **TypeScript** e **Tailwind CSS**.
+
 ---
 
-## Como Rodar o Projeto
+## Como Rodar o Projeto (Jeito Recomendado 🐳)
 
-Para usar o sistema completo no seu computador ou disponibilizá-lo para outros dispositivos pela internet, unificamos a execução.
+A maneira mais fácil e moderna de executar todo o sistema é utilizando o **Docker**. Você não precisará ter o Python nem o Node instalados na sua máquina, e os containers se conectarão automaticamente ao seu Supabase.
 
-Criamos um script automático para Windows que compila o frontend recém atualizado e levanta o servidor inteiro de uma vez só.
-
-Para acessar a Leal Car de outro dispositivo, usaremos o **Ngrok** para tunelamento temporário seguro na web que redireciona direto para o seu PC.
-
-**Passo a passo:**
-1. Crie uma conta em [ngrok.com](https://ngrok.com) e baixe o aplicativo.
-2. Inicie o sistema usando o `start.bat` (deixe a janela preta aberta rodando).
-3. Abra **outro** terminal e execute o ngrok apontando para a porta do nosso sistema:
-```cmd
-ngrok http 8000
+**Passo a Passo:**
+1. Instale o Docker (e o Docker Compose) no seu computador.
+2. Abra o terminal na raiz do projeto (nesta mesma pasta) e digite:
+```bash
+docker compose up --build
 ```
-4. O ngrok vai gerar uma tela com um link que se parece com isso: `https://abcd-123-456.ngrok-free.app` (Forwarding).
-5. Copie esse link e abra em qualquer dispositivo.
+*(Se necessário, use `sudo` no Linux).*
+
+3. Aguarde o download e inicialização. Pronto!
+   - Frontend: acesse [http://localhost:5173](http://localhost:5173)
+   - Backend/API: acesso [http://localhost:8000](http://localhost:8000)
+
+
+### Desenvolvimento Separado
+Caso queira programar ativamente e utilizar os dois terminais abertos para ver alterações via hot-reload local:
+Consulte a seção `Como executar` nos manuais individuais de cada pasta:
+- [Instruções do Backend](./backend/README.md)
+- [Instruções do Frontend](./frontend/README.md)
 
 ---
-*Para desenvolvimento tradicional ou edição separada de cada pasta, consulte o README de cada diretório individual (`app/backend` e `app/frontend`).*
+
+## Configuração do Banco de Dados
+
+O sistema utiliza o Supabase como banco de dados. Configure as variáveis de ambiente no arquivo `.env` do backend:
+- `SUPABASE_URL`: URL do seu projeto Supabase
+- `SUPABASE_KEY`: Chave API do Supabase
