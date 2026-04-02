@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.controllers import car_controller
+from src.controllers import settings_controller
 from fastapi.responses import JSONResponse
 
 app = FastAPI()
@@ -30,6 +31,7 @@ from fastapi.staticfiles import StaticFiles
 import os
 
 app.include_router(car_controller.router)
+app.include_router(settings_controller.router)
 
 dist_path = os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist")
 if os.path.exists(dist_path):

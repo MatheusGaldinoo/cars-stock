@@ -9,13 +9,29 @@ export const Home: React.FC = () => {
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [adminPassword, setAdminPassword] = useState<string>('');
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const { fetchCompanySettings } = await import('../services/api');
+        const settings = await fetchCompanySettings();
+        if (settings.admin_password) {
+          setAdminPassword(settings.admin_password);
+        }
+      } catch (err) {
+        console.error('Erro ao carregar configurações:', err);
+      }
+    };
+    loadSettings();
+  }, []);
 
   // Modal and Form States
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCar, setEditingCar] = useState<Car | null>(null);
   
   // Utilizando sessionStorage para manter a senha apenas durante a sessão ativa.
-  const [isAuthenticated, setIsAuthenticated] = useState(sessionStorage.getItem('lealcar_auth') === 'true');
+  const [isAuthenticated, setIsAuthenticated] = useState(sessionStorage.getItem('stock_auth') === 'true');
 
   const loadCars = async () => {
     try {
@@ -55,11 +71,10 @@ export const Home: React.FC = () => {
   const checkAuth = (): boolean => {
     if (isAuthenticated) return true;
     
-    // Prompt invisível não é possível nativamente, mas para funcionalidade simples:
     const pwd = window.prompt('Acesso Restrito: Digite a senha do administrador:');
     
-    if (pwd !== null && pwd.trim().toLowerCase() === 'lealcar') {
-      sessionStorage.setItem('lealcar_auth', 'true');
+    if (pwd !== null && pwd === adminPassword) {
+      sessionStorage.setItem('stock_auth', 'true');
       setIsAuthenticated(true);
       return true;
     }

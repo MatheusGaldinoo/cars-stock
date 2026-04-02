@@ -1,6 +1,4 @@
-# Sistema da Concessionária Leal Car 🚗
-
-Este é um projeto de gerenciamento de estoque de veículos desenvolvido para a concessionária Leal Car.
+# Sistema de Gerenciamento de Estoque de Carros 🚗
 
 ## Estrutura do Projeto
 
@@ -25,23 +23,10 @@ docker compose up --build
 
 3. Aguarde o download e inicialização. Pronto!
    - Frontend: acesse [http://localhost:5173](http://localhost:5173)
-   - Backend/API: acesse [http://localhost:8000](http://localhost:8000)
+   - Backend/API: acesso [http://localhost:8000](http://localhost:8000)
 
-**Nota:** O Docker foi configurado com *hot-reload*. Se você editar arquivos de código, o site e o servidor farão auto-refresh sem precisar reiniciar!
 
----
-
-## Como Rodar o Projeto Manualmente (Modo Clássico)
-
-Se você preferir executar o código diretamente no seu computador e já possui Python e Node instalados, você tem duas opções:
-
-### Opção A: Usando o Script Rápido
-Temos scripts criados para facilitar a inicialização. No terminal da raiz, execute:
-- **Windows:** Dê dois cliques em `start.bat` ou rode no terminal `start.bat`.
-- **Linux/Mac:** Rode no terminal `./start.sh`.
-*(O script irá gerar o build do frontend e ligar a API em seguida).*
-
-### Opção B: Desenvolvimento Separado
+### Desenvolvimento Separado
 Caso queira programar ativamente e utilizar os dois terminais abertos para ver alterações via hot-reload local:
 Consulte a seção `Como executar` nos manuais individuais de cada pasta:
 - [Instruções do Backend](./backend/README.md)
@@ -49,11 +34,8 @@ Consulte a seção `Como executar` nos manuais individuais de cada pasta:
 
 ---
 
-## Como Acessar Fora de Casa (Ngrok)
-Se precisar que um cliente acesse pelo celular dele o sistema rodando na sua máquina:
-1. Deixe o projeto rodando através do Docker ou do Script Rápido.
-2. Em um novo terminal, certifique-se de ter o `ngrok` instalado e rode:
-```bash
-ngrok http 8000
-```
-3. Copie a URL `https://xxxx.ngrok-free.app` gerada e envie!
+## Configuração do Banco de Dados
+
+O sistema utiliza o Supabase como banco de dados. Configure as variáveis de ambiente no arquivo `.env` do backend:
+- `SUPABASE_URL`: URL do seu projeto Supabase
+- `SUPABASE_KEY`: Chave API do Supabase

@@ -1,13 +1,13 @@
-# Frontend - Interface Web Leal Car 🚗
+# Frontend - Interface Web de Gerenciamento de Estoque 🛒
 
-Aqui ficam todas as telas e painéis visuais usados pela concessionária para gerenciar o sistema.
+Aqui ficam todas as telas e painéis visuais usados para gerenciar o sistema de estoque.
 
-> **⚠️ RECOMENDAÇÃO:** Caso queira subir o sistema completo de uma vez, vá para a pasta raiz `cars-stock` e execute o comando `docker compose up`.
+> **⚠️ RECOMENDAÇÃO:** Caso queira subir o sistema completo de uma vez, vá para a pasta raiz e execute o comando `docker compose up`.
 
 ## Pré-requisitos (Apenas para execução Manual)
 
 - [Node.js](https://nodejs.org/) (versão de 18 a 20+ recomendada)
-- Certifique-se de que a API (`backend`) já está online para que as fotos e o estoque carreguem.
+- Certifique-se de que a API (`backend`) já está online para que os dados e imagens carreguem.
 
 ## Como Executar no modo Desenvolvedor
 

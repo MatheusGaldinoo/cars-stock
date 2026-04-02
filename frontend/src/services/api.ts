@@ -16,6 +16,13 @@ export interface Car {
   photo?: string | null;
 }
 
+export interface CompanySettings {
+  id: number;
+  name: string;
+  logo_url?: string | null;
+  admin_password?: string | null;
+}
+
 export const fetchCars = async (plate?: string): Promise<Car[]> => {
   const response = await api.get('/cars/', {
     params: { plate }
@@ -40,6 +47,11 @@ export const updateCar = async (plate: string, carData: Partial<Car>): Promise<C
 
 export const deleteCar = async (plate: string): Promise<void> => {
   await api.delete(`/cars/${plate}`);
+};
+
+export const fetchCompanySettings = async (): Promise<CompanySettings> => {
+  const response = await api.get('/settings');
+  return response.data;
 };
 
 export default api;

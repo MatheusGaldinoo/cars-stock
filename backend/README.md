@@ -1,6 +1,6 @@
-# Backend - API Leal Car 🐍
+# Backend - API de Gerenciamento de Estoque 🐍
 
-Esta é a API que fornece as informações e gerencia o banco de dados do estoque.
+Esta é a API que fornece as informações e gerencia o banco de dados do sistema de estoque.
 
 > **⚠️ RECOMENDAÇÃO:** Se você não for editar ativamente o backend, recomendamos fortemente que você inicie o projeto na raiz através do comando `docker compose up --build`. Lembre-se de configurar o seu arquivo `.env` para que o container do backend se conecte ao seu Supabase na nuvem.
 
