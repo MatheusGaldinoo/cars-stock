@@ -5,18 +5,22 @@ from src.schemas.car_schema import CarCreate
 
 @pytest.fixture
 def fresh_db_session():
-    cursor = MagicMock()
-    cursor.fetchall.return_value = []
-    cursor.fetchone.return_value = None
+    mock_cursor = MagicMock()
+    mock_cursor.fetchall.return_value = []
+    mock_cursor.fetchone.return_value = None
+    
     conn = MagicMock()
-    conn.cursor.return_value = cursor
+    conn.cursor.return_value = conn
+    conn.fetchall.side_effect = lambda: mock_cursor.fetchall()
+    conn.fetchone.side_effect = lambda: mock_cursor.fetchone()
     conn.__enter__ = lambda self: self
     conn.__exit__ = lambda self, *args: None
+    
+    conn._mock_cursor = mock_cursor
     return conn
 
 def test_service_create_car(fresh_db_session):
-    cursor = fresh_db_session.cursor()
-    cursor.fetchone.return_value = None
+    fresh_db_session._mock_cursor.fetchone.return_value = None
     
     car_data = CarCreate(
         plate="SERV1", brand="S", model="X", year=2021, price=100.0
@@ -26,8 +30,7 @@ def test_service_create_car(fresh_db_session):
     assert result.brand == "S"
 
 def test_service_create_duplicate_plate(fresh_db_session):
-    cursor = fresh_db_session.cursor()
-    cursor.fetchone.return_value = ("DUP1", "D", "X", 2021, 100.0, None, True)
+    fresh_db_session._mock_cursor.fetchone.return_value = ("DUP1", "D", "X", 2021, 100.0, None, True)
     
     car_data = CarCreate(
         plate="DUP1", brand="D", model="X", year=2021, price=100.0
@@ -39,8 +42,7 @@ def test_service_create_duplicate_plate(fresh_db_session):
     assert "já existe" in str(exc.value)
 
 def test_service_search_car(fresh_db_session):
-    cursor = fresh_db_session.cursor()
-    cursor.fetchall.return_value = [("SRCH1", "S", "X", 2021, 100.0, None, True)]
+    fresh_db_session._mock_cursor.fetchall.return_value = [("SRCH1", "S", "X", 2021, 100.0, None, True)]
     
     car_data = CarCreate(
         plate="SRCH1", brand="S", model="X", year=2021, price=100.0
@@ -52,8 +54,7 @@ def test_service_search_car(fresh_db_session):
     assert result[0].plate == "SRCH1"
 
 def test_service_search_not_found(fresh_db_session):
-    cursor = fresh_db_session.cursor()
-    cursor.fetchall.return_value = []
+    fresh_db_session._mock_cursor.fetchall.return_value = []
     
     result = car_service.search_car(fresh_db_session, "NONEXISTENT")
     assert result == []

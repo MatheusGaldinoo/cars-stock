@@ -1,9 +1,7 @@
 from unittest.mock import MagicMock, patch
 
 def test_create_car(client, mock_conn):
-    mock_cursor = MagicMock()
-    mock_cursor.fetchone.return_value = None
-    mock_conn.cursor.return_value = mock_cursor
+    mock_conn._mock_cursor.fetchone.return_value = None
     
     car_data = {
         "plate": "TST1234",
@@ -23,29 +21,23 @@ def test_list_cars(client):
     assert isinstance(response.json(), list)
 
 def test_search_car(client, mock_conn):
-    mock_cursor = MagicMock()
-    mock_cursor.fetchall.return_value = [("SEARCH1", "X", "Y", 2020, 10.0, None, True)]
-    mock_cursor.fetchone.return_value = ("SEARCH1", "X", "Y", 2020, 10.0, None, True)
-    mock_conn.cursor.return_value = mock_cursor
+    mock_conn._mock_cursor.fetchall.return_value = [("SEARCH1", "X", "Y", 2020, 10.0, None, True)]
+    mock_conn._mock_cursor.fetchone.return_value = ("SEARCH1", "X", "Y", 2020, 10.0, None, True)
     
     response = client.get("/cars/SEARCH1")
     assert response.status_code == 200
     assert response.json()["plate"] == "SEARCH1"
 
 def test_search_car_not_found(client, mock_conn):
-    mock_cursor = MagicMock()
-    mock_cursor.fetchall.return_value = []
-    mock_cursor.fetchone.return_value = None
-    mock_conn.cursor.return_value = mock_cursor
+    mock_conn._mock_cursor.fetchall.return_value = []
+    mock_conn._mock_cursor.fetchone.return_value = None
     
     response = client.get("/cars/NONEXISTENT")
     assert response.status_code == 404
     assert response.json()["detail"] == "Car not found"
 
 def test_delete_car(client, mock_conn):
-    mock_cursor = MagicMock()
-    mock_cursor.fetchone.return_value = None
-    mock_conn.cursor.return_value = mock_cursor
+    mock_conn._mock_cursor.fetchone.return_value = None
     
     car_data = {
         "plate": "DEL123", "brand": "X", "model": "Y", "year": 2020, "price": 10.0

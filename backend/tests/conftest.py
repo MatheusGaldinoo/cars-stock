@@ -9,18 +9,21 @@ os.environ['SUPABASE_KEY'] = 'test-key'
 from src.main import app
 
 @pytest.fixture
-def mock_cursor():
-    cursor = MagicMock()
-    cursor.fetchall.return_value = []
-    cursor.fetchone.return_value = None
-    return cursor
-
-@pytest.fixture
-def mock_conn(mock_cursor):
+def mock_conn():
+    mock_cursor = MagicMock()
+    mock_cursor.fetchall.return_value = []
+    mock_cursor.fetchone.return_value = None
+    
     conn = MagicMock()
-    conn.cursor.return_value = mock_cursor
+    conn.cursor.return_value = conn
+    conn.execute.return_value = None
+    conn.fetchall.side_effect = lambda: mock_cursor.fetchall()
+    conn.fetchone.side_effect = lambda: mock_cursor.fetchone()
     conn.__enter__ = lambda self: self
     conn.__exit__ = lambda self, *args: None
+    
+    # Store reference to internal cursor to allow tests to mock returned values
+    conn._mock_cursor = mock_cursor
     return conn
 
 @pytest.fixture
@@ -31,22 +34,32 @@ def client(mock_conn):
 
 @pytest.fixture
 def fresh_db_session():
-    cursor = MagicMock()
-    cursor.fetchall.return_value = []
-    cursor.fetchone.return_value = None
+    mock_cursor = MagicMock()
+    mock_cursor.fetchall.return_value = []
+    mock_cursor.fetchone.return_value = None
+    
     conn = MagicMock()
-    conn.cursor.return_value = cursor
+    conn.cursor.return_value = conn
+    conn.fetchall.side_effect = lambda: mock_cursor.fetchall()
+    conn.fetchone.side_effect = lambda: mock_cursor.fetchone()
     conn.__enter__ = lambda self: self
     conn.__exit__ = lambda self, *args: None
+    
+    conn._mock_cursor = mock_cursor
     return conn
 
 @pytest.fixture
 def db_session():
-    cursor = MagicMock()
-    cursor.fetchall.return_value = []
-    cursor.fetchone.return_value = None
+    mock_cursor = MagicMock()
+    mock_cursor.fetchall.return_value = []
+    mock_cursor.fetchone.return_value = None
+    
     conn = MagicMock()
-    conn.cursor.return_value = cursor
+    conn.cursor.return_value = conn
+    conn.fetchall.side_effect = lambda: mock_cursor.fetchall()
+    conn.fetchone.side_effect = lambda: mock_cursor.fetchone()
     conn.__enter__ = lambda self: self
     conn.__exit__ = lambda self, *args: None
+    
+    conn._mock_cursor = mock_cursor
     return conn
