@@ -39,6 +39,7 @@ export const Home: React.FC = () => {
       setError(null);
       const data = await fetchCars();
       setCars(data);
+      await new Promise(resolve => setTimeout(resolve, 1000));
     } catch {
       setError('Erro ao carregar os carros.');
     } finally {
@@ -144,9 +145,19 @@ export const Home: React.FC = () => {
         )}
 
         {loading ? (
-          <div className="text-center py-20">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent mb-4"></div>
-            <p className="text-gray-500 font-medium">Carregando veículos...</p>
+          <div className="grid-x grid-margin-x grid-margin-y small-up-1 medium-up-2 large-up-3">
+            {[...Array(6)].map((_, index) => (
+              <div className="cell" key={index}>
+                <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                  <div className={`h-48 ${index % 2 === 0 ? 'bg-gray-300' : 'bg-gray-200'}`}></div>
+                  <div className="p-4">
+                    <div className={`h-6 w-3/4 rounded mb-3 ${index % 2 === 0 ? 'bg-gray-300' : 'bg-gray-200'}`}></div>
+                    <div className={`h-4 w-1/2 rounded mb-2 ${index % 2 === 0 ? 'bg-gray-200' : 'bg-gray-300'}`}></div>
+                    <div className={`h-4 w-1/3 rounded ${index % 2 === 0 ? 'bg-gray-300' : 'bg-gray-200'}`}></div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="grid-x grid-margin-x grid-margin-y small-up-1 medium-up-2 large-up-3">
