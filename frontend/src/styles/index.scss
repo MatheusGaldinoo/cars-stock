@@ -321,6 +321,93 @@ body {
   }
 }
 
+// --- Skeleton Loading ---
+@keyframes skeleton-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.skeleton-item {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--gray-200);
+  
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg, 
+      transparent, 
+      rgba(255, 255, 255, 0.6), 
+      transparent
+    );
+    animation: skeleton-shimmer 2s infinite linear;
+  }
+}
+
+.skeleton-card {
+  background-color: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .skeleton-image {
+    height: 220px;
+  }
+
+  .skeleton-content {
+    padding: 1.75rem;
+    flex-grow: 1;
+
+    .skeleton-title {
+      height: 1.5rem;
+      width: 80%;
+      margin-bottom: 0.75rem;
+      border-radius: 8px;
+    }
+
+    .skeleton-text {
+      height: 1rem;
+      width: 60%;
+      margin-bottom: 1.5rem;
+      border-radius: 6px;
+    }
+
+    .skeleton-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--gray-200);
+
+      .skeleton-price {
+        height: 2rem;
+        width: 100px;
+        border-radius: 8px;
+      }
+
+      .skeleton-btns {
+        display: flex;
+        gap: 0.5rem;
+        
+        .skeleton-btn {
+          width: 38px;
+          height: 38px;
+          border-radius: 8px;
+        }
+      }
+    }
+  }
+}
+
 // Media queries for better responsiveness
 @media (max-width: 640px) {
   .floating-actions-container {
