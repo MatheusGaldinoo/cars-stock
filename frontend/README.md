@@ -1,8 +1,6 @@
 # Frontend - Interface Web de Gerenciamento de Estoque 🛒
 
-Aqui ficam todas as telas e painéis visuais usados para gerenciar o sistema de estoque.
-
-> **⚠️ RECOMENDAÇÃO:** Caso queira subir o sistema completo de uma vez, vá para a pasta raiz e execute o comando `docker compose up`.
+Esta é a interface do sistema.
 
 ## Pré-requisitos (Apenas para execução Manual)
 
