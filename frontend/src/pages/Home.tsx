@@ -4,6 +4,7 @@ import { Header } from '../components/Header';
 import { CarCard } from '../components/CarCard';
 import { SkeletonCard } from '../components/SkeletonCard';
 import { CarModal } from '../components/CarModal';
+import { AdminAuthModal } from '../components/AdminAuthModal';
 import { FloatingActions } from '../components/FloatingActions';
 
 export const Home: React.FC = () => {
@@ -13,12 +14,14 @@ export const Home: React.FC = () => {
   const [adminPassword, setAdminPassword] = useState<string>('');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
   const [editingCar, setEditingCar] = useState<Car | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(
     sessionStorage.getItem('stock_auth') === 'true'
   );
 
-  // 🔹 Carregar configurações
+  // Carregar configurações
   useEffect(() => {
     const loadSettings = async () => {
       try {
@@ -34,21 +37,17 @@ export const Home: React.FC = () => {
     loadSettings();
   }, []);
 
-  // 🔹 Carregar carros
+  // Carregar carros
   const loadCars = async () => {
     try {
       setLoading(true);
       setError(null);
-
-      // Simular um carregamento leve para garantir que o skeleton seja visível
-      // O usuário pediu especificamente para ver a animação funcionando
-      await new Promise(resolve => setTimeout(resolve, 800));
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       const data = await fetchCars();
       setCars(data);
-
     } catch {
-      setError('Erro ao carregar os carros.');
+      setError('Erro ao carregar o catálogo de veículos.');
     } finally {
       setLoading(false);
     }
@@ -58,75 +57,79 @@ export const Home: React.FC = () => {
     loadCars();
   }, []);
 
-  // 🔹 Busca
-  const handleSearch = async (plate: string) => {
+  const [isFiltering, setIsFiltering] = useState(false);
+
+  // Busca
+  const handleSearch = async (searchTerm: string, minPrice?: number, maxPrice?: number) => {
+    const hasSearchActive = Boolean(searchTerm.trim() || minPrice !== undefined || maxPrice !== undefined);
+    setIsFiltering(hasSearchActive);
+
     try {
       setLoading(true);
       setError(null);
-
-      // Pequeno delay para feedback visual do skeleton
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      const data = await fetchCars(plate.toUpperCase());
+      const data = await fetchCars({
+        q: searchTerm.trim() || undefined,
+        min_price: minPrice,
+        max_price: maxPrice
+      });
       setCars(data);
 
-      if (data.length === 0 && plate.trim() !== '') {
-        setError(`Nenhum carro encontrado com a placa ${plate.toUpperCase()}`);
+      if (data.length === 0 && hasSearchActive) {
+        setError('Nenhum veículo encontrado para os critérios de busca selecionados.');
       }
     } catch {
-      setError('Ocorreu um erro ao buscar os dados.');
+      setError('Ocorreu um erro ao realizar a busca.');
     } finally {
       setLoading(false);
     }
   };
 
-  // 🔹 Auth simples
-  const checkAuth = (): boolean => {
-    if (isAuthenticated) return true;
-
-    const pwd = window.prompt('Acesso Restrito: Digite a senha do administrador:');
-
-    if (pwd !== null && pwd === adminPassword) {
-      sessionStorage.setItem('stock_auth', 'true');
-      setIsAuthenticated(true);
-      return true;
+  // Executa ação protegida verificando autenticação
+  const executeWithAuth = (action: () => void) => {
+    if (isAuthenticated) {
+      action();
+    } else {
+      setPendingAction(() => action);
+      setIsAuthModalOpen(true);
     }
-
-    if (pwd !== null) {
-      alert('Senha incorreta!');
-    }
-
-    return false;
   };
 
-  // 🔹 Handlers
+  const handleAuthSuccess = () => {
+    setIsAuthenticated(true);
+    if (pendingAction) {
+      pendingAction();
+      setPendingAction(null);
+    }
+  };
+
+  // Handlers
   const handleAddClick = () => {
-    if (checkAuth()) {
+    executeWithAuth(() => {
       setEditingCar(null);
       setIsModalOpen(true);
-    }
+    });
   };
 
   const handleEditClick = (car: Car) => {
-    if (checkAuth()) {
+    executeWithAuth(() => {
       setEditingCar(car);
       setIsModalOpen(true);
-    }
+    });
   };
 
   const handleDeleteClick = async (plate: string) => {
-    if (!checkAuth()) return;
-
-    if (window.confirm(`ATENÇÃO! Deseja remover o carro ${plate}?`)) {
-      try {
-        setLoading(true);
-        await deleteCar(plate);
-        await loadCars();
-      } catch {
-        alert('Erro ao excluir carro.');
-        setLoading(false);
+    executeWithAuth(async () => {
+      if (window.confirm(`Confirma a exclusão do veículo com a placa ${plate}?`)) {
+        try {
+          setLoading(true);
+          await deleteCar(plate);
+          await loadCars();
+        } catch {
+          alert('Erro ao excluir veículo.');
+          setLoading(false);
+        }
       }
-    }
+    });
   };
 
   const handleSaveCar = async (carData: Partial<Car>) => {
@@ -143,11 +146,79 @@ export const Home: React.FC = () => {
     }
   };
 
+  // Métricas executivas
+  const totalVehicles = cars.length;
+  const totalStockValue = cars.reduce((acc, car) => acc + (car.price || 0), 0);
+  const averagePrice = totalVehicles > 0 ? totalStockValue / totalVehicles : 0;
+
   return (
     <>
       <Header onSearch={handleSearch} />
 
       <main className="grid-container relative pb-32">
+        {/* Barra de Métricas Rápidas (oculta durante busca/filtros para foco nos resultados) */}
+        {!loading && !isFiltering && cars.length > 0 && (
+          <div 
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: '1rem',
+              marginBottom: '2rem'
+            }}
+          >
+            <div 
+              style={{
+                background: '#FFFFFF',
+                borderRadius: '12px',
+                padding: '1.25rem',
+                border: '1px solid #E9ECEF',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.04)'
+              }}
+            >
+              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6C757D', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Estoque Atual
+              </span>
+              <p style={{ margin: '0.25rem 0 0 0', fontSize: '1.75rem', fontWeight: 800, color: '#121212' }}>
+                {totalVehicles} <span style={{ fontSize: '0.9rem', fontWeight: 500, color: '#6C757D' }}>veículos</span>
+              </p>
+            </div>
+
+            <div 
+              style={{
+                background: '#FFFFFF',
+                borderRadius: '12px',
+                padding: '1.25rem',
+                border: '1px solid #E9ECEF',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.04)'
+              }}
+            >
+              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6C757D', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Patrimônio em Estoque
+              </span>
+              <p style={{ margin: '0.25rem 0 0 0', fontSize: '1.75rem', fontWeight: 800, color: '#0A58CA' }}>
+                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(totalStockValue)}
+              </p>
+            </div>
+
+            <div 
+              style={{
+                background: '#FFFFFF',
+                borderRadius: '12px',
+                padding: '1.25rem',
+                border: '1px solid #E9ECEF',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.04)'
+              }}
+            >
+              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6C757D', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Ticket Médio
+              </span>
+              <p style={{ margin: '0.25rem 0 0 0', fontSize: '1.75rem', fontWeight: 800, color: '#121212' }}>
+                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(averagePrice)}
+              </p>
+            </div>
+          </div>
+        )}
+
         {error && (
           <div className="callout alert border-l-4 border-red-500 bg-red-50 text-red-700 p-4 rounded-md shadow-sm mb-6">
             <p className="font-medium m-0 flex items-center">
@@ -158,7 +229,6 @@ export const Home: React.FC = () => {
 
         <div className="grid-x grid-margin-x grid-margin-y small-up-1 medium-up-2 large-up-3">
           {loading ? (
-            // 🔹 Skeleton real
             Array.from({ length: 6 }).map((_, index) => (
               <div className="cell" key={index}>
                 <SkeletonCard />
@@ -178,7 +248,24 @@ export const Home: React.FC = () => {
 
               {cars.length === 0 && !error && (
                 <div className="cell small-12 text-center mt-12">
-                  <div className="text-6xl mb-4 opacity-50">🚗</div>
+                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.25rem' }}>
+                    <div 
+                      style={{
+                        width: '80px',
+                        height: '80px',
+                        borderRadius: '50%',
+                        backgroundColor: '#E9ECEF',
+                        color: '#6C757D',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.4-1.7-1.1-2.2l-3.4-2.6A2 2 0 0016.3 8H7.7a2 2 0 00-1.2.2L3.1 10.8C2.4 11.3 2 12.1 2 13v3c0 .6.4 1 1 1h2m14 0a2 2 0 11-4 0m4 0a2 2 0 10-4 0m-8 0a2 2 0 11-4 0m4 0a2 2 0 10-4 0m2-5h10" />
+                      </svg>
+                    </div>
+                  </div>
                   <h4 className="text-gray-500 font-semibold mb-2">
                     Nenhum veículo disponível no momento.
                   </h4>
@@ -199,6 +286,16 @@ export const Home: React.FC = () => {
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveCar}
         initialData={editingCar}
+      />
+
+      <AdminAuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => {
+          setIsAuthModalOpen(false);
+          setPendingAction(null);
+        }}
+        onSuccess={handleAuthSuccess}
+        adminPassword={adminPassword}
       />
     </>
   );
