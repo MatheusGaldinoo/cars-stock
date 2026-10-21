@@ -4,14 +4,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-
 def get_db():
     return DatabaseConnection()
 
 class DatabaseConnection:
     def __init__(self):
-        self.conn = psycopg2.connect(DATABASE_URL)
+        db_url = os.getenv("DATABASE_URL")
+        if not db_url:
+            raise ValueError("DATABASE_URL não configurada no ambiente")
+        self.conn = psycopg2.connect(db_url)
         self._result = None
     
     def cursor(self):

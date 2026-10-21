@@ -24,9 +24,17 @@ export interface CompanySettings {
   admin_password?: string | null;
 }
 
-export const fetchCars = async (plate?: string): Promise<Car[]> => {
+export interface FetchCarsParams {
+  q?: string;
+  plate?: string;
+  min_price?: number;
+  max_price?: number;
+}
+
+export const fetchCars = async (params?: FetchCarsParams | string): Promise<Car[]> => {
+  const queryParams = typeof params === 'string' ? { q: params } : params;
   const response = await api.get('/cars/', {
-    params: { plate }
+    params: queryParams
   });
   return response.data;
 };

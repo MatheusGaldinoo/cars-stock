@@ -12,11 +12,29 @@ def parse_row(row):
         )
     return Car(plate=row[0], brand=row[1], model=row[2], year=row[3], price=float(row[4]), photo=row[5], available=row[6] if len(row) > 6 else True)
 
-def list_cars(conn, plate: str | None = None):
-    if plate:
-        conn.execute("SELECT plate, brand, model, year, price, photo, available FROM cars WHERE plate LIKE %s", (f"%{plate}%",))
-    else:
-        conn.execute("SELECT plate, brand, model, year, price, photo, available FROM cars")
+def list_cars(conn, query: str | None = None, min_price: float | None = None, max_price: float | None = None):
+    sql = "SELECT plate, brand, model, year, price, photo, available FROM cars"
+    conditions = []
+    params = []
+
+    if query and query.strip():
+        q = f"%{query.strip()}%"
+        conditions.append("(plate ILIKE %s OR brand ILIKE %s OR model ILIKE %s)")
+        params.extend([q, q, q])
+
+    if min_price is not None:
+        conditions.append("price >= %s")
+        params.append(min_price)
+
+    if max_price is not None:
+        conditions.append("price <= %s")
+        params.append(max_price)
+
+    if conditions:
+        sql += " WHERE " + " AND ".join(conditions)
+
+    sql += " ORDER BY price DESC"
+    conn.execute(sql, tuple(params) if params else None)
     
     rows = conn.fetchall()
     return [parse_row(row) for row in rows]

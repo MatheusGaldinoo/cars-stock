@@ -7,9 +7,15 @@ router = APIRouter(prefix="/cars", tags=["cars"])
 
 
 @router.get("/", response_model=list[CarResponse])
-def list_cars(plate: str | None = None):
+def list_cars(
+    plate: str | None = None,
+    q: str | None = None,
+    min_price: float | None = None,
+    max_price: float | None = None
+):
+    search_term = q or plate
     with get_db() as db:
-        return car_service.list_cars(db, plate)
+        return car_service.list_cars(db, query=search_term, min_price=min_price, max_price=max_price)
 
 
 @router.post("/", response_model=CarResponse, status_code=status.HTTP_201_CREATED)
